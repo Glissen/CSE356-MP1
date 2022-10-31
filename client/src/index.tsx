@@ -47,7 +47,7 @@ function App() {
 
   async function connect(id: any) {
     setConnecting(true);
-    const eventSource = new EventSource(`/api/connect/${id}`);
+    const eventSource = new EventSource(`/api/connect/${id}`, { withCredentials: true });
     eventSource.onopen = (e) => setConnecting(false);
     eventSource.addEventListener('sync', (e) => {
       const content = toUint8Array(e.data);
