@@ -72,7 +72,7 @@ async function op(request, respsonse, next) {
             Y.applyUpdate(ydoc.doc, update)
             ydoc.clients.forEach((client) => {
                 // client.response.write(JSON.stringify({ event: "update", data: fromUint8Array(update) }) + "\n");
-                client.response.write("event: sync\ndata: " + fromUint8Array(update) + "\n\n");
+                client.response.write("event: update\ndata: " + fromUint8Array(update) + "\n\n");
                 console.log("Sending update to client " + client.id)
             });
         }
