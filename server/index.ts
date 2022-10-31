@@ -51,9 +51,11 @@ function connect(request, response, next) {
     console.log("Connecting client " + clientId + " to doc " + id)
 
     const data = {
-        sync: fromUint8Array(Y.encodeStateAsUpdate(ydoc.doc))
+        event: "sync",
+        data: fromUint8Array(Y.encodeStateAsUpdate(ydoc.doc))
     };
-    response.write(JSON.stringify(data) + "\n");
+    // response.write(JSON.stringify(data) + "\n");
+    response.write("event: sync\ndata: " + fromUint8Array(Y.encodeStateAsUpdate(ydoc.doc)) + "\n\n")
 
     request.on('close', () => {
         console.log(`${clientId} Connection closed`);
@@ -69,7 +71,8 @@ async function op(request, respsonse, next) {
             console.log("Found doc " + id)
             Y.applyUpdate(ydoc.doc, update)
             ydoc.clients.forEach((client) => {
-                client.response.write(JSON.stringify({ update: fromUint8Array(update) }) + "\n");
+                // client.response.write(JSON.stringify({ event: "update", data: fromUint8Array(update) }) + "\n");
+                client.response.write("event: sync\ndata: " + fromUint8Array(update) + "\n\n");
                 console.log("Sending update to client " + client.id)
             });
         }
