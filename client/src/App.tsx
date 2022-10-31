@@ -1,18 +1,32 @@
 import './App.css';
 import { useState } from 'react';
 import Editor from './components/Editor';
-import Connect from './components/Connect';
+import Connect from './components/Connect'; 
+import * as Y from 'yjs'
+import { toUint8Array } from 'js-base64';
 
 function App() {
-  const [session, setSession] = useState('');
+  const [connecting, setConnecting] = useState(false);
+  const [sessionID, setSessionID] = useState('');
+  const [doc, setDoc] = useState(new Y.Doc())
 
-  function connect() {
-    
+  async function connect(id: any) {
+    setConnecting(true);
+    const eventSource = new EventSource(`/api/connect/${id}`, { withCredentials: true });
+    eventSource.onopen = (e) => setConnecting(false);
+    eventSource.addEventListener('sync', (e) => {
+      const content = toUint8Array(e.data);
+      Y.applyUpdate(doc, content);
+    })
+    eventSource.addEventListener('update', (e) => {
+      const content = toUint8Array(e.data);
+      Y.applyUpdate(doc, content);
+    })
   }
 
   return (  
     <div className="App">
-      {session ? <Editor /> : <Connect connect={connect}/>} 
+      {sessionID ? <Editor id={sessionID} doc={doc}/> : <Connect connect={connect} connecting={connecting}/>} 
     </div>
   );
 }
