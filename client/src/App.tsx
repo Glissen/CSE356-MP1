@@ -23,6 +23,7 @@ function App() {
     })
     eventSource.addEventListener('update', (e) => {
       const content = toUint8Array(e.data);
+      console.log(content)
       Y.applyUpdate(doc, content);
     })
   }
