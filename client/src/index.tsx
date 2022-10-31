@@ -47,7 +47,7 @@ function App() {
 
   async function connect(id: any) {
     setConnecting(true);
-    const eventSource = new EventSource(`/api/connect/${id}`, { withCredentials: true });
+    const eventSource = new EventSource(`http://127.0.0.1:3001/api/connect/${id}`, { withCredentials: true });
     eventSource.onopen = (e) => setConnecting(false);
     eventSource.addEventListener('sync', (e) => {
       const content = toUint8Array(e.data);

@@ -13,7 +13,7 @@ export default function Editor(props: {id: any, doc: any}) {
         const content = props.doc.getText('quill');
         new QuillBinding(content, editor);
         props.doc.on('update', async(update: any) => {
-            await axios.post(`/api/op/${props.id}`, {
+            await axios.post(`http://127.0.0.1:3001/api/op/${props.id}`, {
                 update: fromUint8Array(update)
             })
         })
