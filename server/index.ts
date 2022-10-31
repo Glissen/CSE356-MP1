@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import * as Y from 'yjs';
 import { fromUint8Array, toUint8Array } from 'js-base64';
 
@@ -7,6 +8,7 @@ const PORT: number = 3001;
 
 const app: express.Application = express();
 app.use(bodyParser.json());
+app.use(cors({origin: '*'}));
 
 const ydocs: Array<ydoc> = [];
 
