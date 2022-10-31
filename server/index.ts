@@ -50,11 +50,6 @@ function connect(request, response, next) {
     ydoc.clients.push(newClient);
     console.log("Connecting client " + clientId + " to doc " + id)
 
-    const data = {
-        event: "sync",
-        data: fromUint8Array(Y.encodeStateAsUpdate(ydoc.doc))
-    };
-    // response.write(JSON.stringify(data) + "\n");
     response.write("event: sync\ndata: " + fromUint8Array(Y.encodeStateAsUpdate(ydoc.doc)) + "\n\n")
 
     request.on('close', () => {
@@ -66,12 +61,14 @@ function connect(request, response, next) {
 async function op(request, respsonse, next) {
     const update = toUint8Array(request.body.update);
     const id: string = request.params.id;
+    console.log("Doc " + id + " receives Update: " + update)
     ydocs.filter((ydoc) => {
         if (ydoc.id === id) {
             console.log("Found doc " + id)
+            console.log("Text before update: " + ydoc.doc.getText().toString())
             Y.applyUpdate(ydoc.doc, update)
+            console.log("Text after update: " + ydoc.doc.getText().toString())
             ydoc.clients.forEach((client) => {
-                // client.response.write(JSON.stringify({ event: "update", data: fromUint8Array(update) }) + "\n");
                 client.response.write("event: update\ndata: " + fromUint8Array(update) + "\n\n");
                 console.log("Sending update to client " + client.id)
             });
